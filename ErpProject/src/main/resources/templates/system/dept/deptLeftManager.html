@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>部门管理左边的部门树</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <link rel="icon" href="/resources/favicon.ico">
+    <link rel="stylesheet" href="/resources/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="/resources/css/public.css" media="all" />
+
+    <link rel="stylesheet" href="/resources/layui_ext/dtree/dtree.css">
+    <link rel="stylesheet" href="/resources/layui_ext/dtree/font/dtreefont.css">
+</head>
+<body class="main_body">
+
+
+<div>
+    <ul id="deptTree" class="dtree" data-id="0"></ul>
+</div>
+
+<script type="text/javascript" src="/resources/layui/layui.js"></script>
+<script>
+    var leftDeptTree;
+
+    layui.extend({
+        dtree: '/resources/layui_ext/dtree/dtree'
+    }).use(['dtree','layer','jquery'], function(){
+        let dtree = layui.dtree, layer = layui.layer, $ = layui.jquery;
+
+        leftDeptTree = dtree.render({
+            elem: "#deptTree",
+            url: "/dept/loadAllDeptTreeJson",
+            dataStyle: "layuiStyle",  //使用layui风格的数据格式
+            dataFormat: "list",  //配置data的风格为list
+            response:{message:"msg",statusCode:0},  //修改response中返回数据的定义
+            // skin: "layui",  // laySimple主题风格
+        });
+
+        // 绑定节点点击
+        dtree.on("node('deptTree')" ,function(obj){
+            // layer.msg(JSON.stringify(obj.param));
+
+            // 调用右边页面的reloadTable的方法
+            window.parent.main.reloadTable(obj.param.nodeId);
+        });
+    });
+</script>
+</body>
+</html>

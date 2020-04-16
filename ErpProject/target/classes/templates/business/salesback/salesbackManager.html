@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>商品退货管理</title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="Access-Control-Allow-Origin" content="*">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="format-detection" content="telephone=no">
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="/resources/layui/css/layui.css" media="all" />
+<link rel="stylesheet" href="/resources/css/public.css" media="all" />
+
+</head>
+<body class="childrenBody">
+<!-- 查询条件开始 -->
+<blockquote class="layui-elem-quote">
+	<form action="" method="post" id="searchFrm" lay-filter="searchFrm" class="layui-form layui-form-pane" style="display: flex;justify-content: left;align-content: flex-start;">
+		   <div class="layui-inline">
+			 <div class="layui-inline">
+			       <label class="layui-form-label">客户名称</label>
+			       <div class="layui-input-inline">
+			        	<select id="searchCustomer" name="customerid">
+			        		<option value="">请选择客户名称</option>
+			        	</select>
+			      </div>
+			    </div>
+			    <div class="layui-inline">
+			      <label class="layui-form-label">商品名称</label>
+			      <div class="layui-input-inline">
+			         <select id="searchGoods" name="goodsid">
+			        		<option value="">请选择客户</option>
+			        	</select>
+			      </div>
+			    </div>
+			    <div class="layui-inline">
+			      <label class="layui-form-label">开始时间</label>
+			      <div class="layui-input-inline">
+			        <input type="text" name="startTime" id="startTime" readonly="readonly" autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+			    <div class="layui-inline">
+			      <label class="layui-form-label">结束时间</label>
+			      <div class="layui-input-inline"> 
+			        <input type="text" name="endTime"  id="endTime" readonly="readonly" autocomplete="off" class="layui-input">
+			      </div>
+			    </div>
+		  </div>
+		  <div class="layui-inline">
+		      <button type="button" class="layui-btn" lay-submit="" lay-filter="doSearch"><span class="layui-icon layui-icon-search"></span>查询</button>
+      		  <button type="reset" class="layui-btn layui-btn-warm"><span class="layui-icon layui-icon-refresh-1"></span>重置</button>
+		  </div>
+	</form>
+</blockquote>
+<!-- 查询条件结束-->
+
+
+<!-- 数据表格开始 -->
+<div>
+	<table class="layui-hide" id="salesbackTable" lay-filter="salesbackTable"></table>
+</div>
+<script type="text/javascript" src="/resources/layui/layui.js"></script>
+<script type="text/javascript">
+var tableIns;
+layui.use(['jquery','form','table','layer','laydate'],function(){
+		var $=layui.jquery;
+		var form=layui.form;
+		var table=layui.table;
+		var layer=layui.layer;
+		var laydate=layui.laydate;
+		
+		
+		laydate.render({
+			elem:'#startTime',
+			type:'datetime'
+		})
+		laydate.render({
+			elem:'#endTime',
+			type:'datetime'
+		})
+		
+		//加载查询条件的客户的下拉列表
+		$.get("/customer/loadAllAvailableCustomer",function(data){
+			var searchCustomer=$("#searchCustomer");
+			var html='<option value="">请选择客户名称</option>'
+			$.each(data.data,function(i,item){
+				html+='<option value="'+item.id+'">'+item.customername+'</option>'
+			});
+			searchCustomer.html(html);
+			form.render();
+		});
+		//加载查询条件的商品的下拉列表
+		$.get("/goods/loadAllAvailableGoods",function(data){
+			var searchGoods=$("#searchGoods");
+			var html='<option value="">请选择商品名称</option>'
+			$.each(data.data,function(i,item){
+				html+='<option value="'+item.id+'">'+item.goodsname+"["+item.size+"]"+'</option>'
+			});
+			searchGoods.html(html);
+			form.render();
+		})
+		
+		//加载 数据
+		 tableIns=table.render({
+			 elem: '#salesbackTable'
+		    ,url:'/salesback/loadAllSalesback'
+		    ,toolbar: '#salesbackToolBar' //开启头部工具栏，并为其绑定左侧模板
+		    ,title: '商品退货数据表'
+		    ,height:'full-220'
+		    ,page: true
+		    ,cols: [ [
+		       {field:'id', title:'ID',align:'center'}
+		      ,{field:'goodsname', title:'退货商品名称',align:'center'}
+		      ,{field:'size', title:'退货商品规格',align:'center'}
+		      ,{field:'customername', title:'客户名称',align:'center'}
+		      ,{field:'salesbacktime', title:'退货时间',align:'center'}
+		      ,{field:'number', title:'退货数量',align:'center'}
+		      ,{field:'paytype', title:'退款方式',align:'center'}
+		      ,{field:'salebackprice', title:'退货价格',align:'center'}
+		      ,{field:'remark', title:'退货备注',align:'center'}
+		      ,{field:'salesid', title:'销售ID',align:'center'}
+		      ,{field:'operateperson', title:'操作人',align:'center'}
+		    ] ]
+		});
+		
+		//模糊查询
+		form.on("submit(doSearch)",function(data){
+			tableIns.reload({
+				where:data.field,
+				page:{
+					curr:1
+				}
+			});
+			return false;
+		});
+	});
+</script>
+
+</body>
+</html>

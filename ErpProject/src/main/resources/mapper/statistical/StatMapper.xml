@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qc.statistical.mapper.StatMapper">
+
+    <!--加载客户地区数据-->
+    <select id="queryCustomerAreaStat" resultType="com.qc.statistical.domain.BaseEntity">
+        SELECT `address` AS `name`,COUNT(1) AS `value` FROM `bus_customer` GROUP BY `address`
+    </select>
+
+    <!--加载客户年度销售额统计业绩-->
+    <select id="queryCustomerYearGradeStat" resultType="com.qc.statistical.domain.BaseEntity">
+        SELECT customerid AS `name`,SUM(`number` * `saleprice`) AS `value` FROM `bus_sales` WHERE DATE_FORMAT(`salestime`,'%Y') = #{year} GROUP BY customerid
+    </select>
+
+    <!--查询客户年度月份销售额-->
+    <select id="loadCustomerMethodStat" resultType="java.lang.Double">
+        SELECT SUM(number*saleprice) FROM `bus_sales` WHERE DATE_FORMAT(salestime,"%Y%m") = CONCAT(#{year},"01")
+        UNION ALL
+        SELECT SUM(number*saleprice) FROM `bus_sales` WHERE DATE_FORMAT(salestime,"%Y%m") = CONCAT(#{year},"02")
+        UNION ALL
+        SELECT SUM(number*saleprice) FROM `bus_sales` WHERE DATE_FORMAT(salestime,"%Y%m") = CONCAT(#{year},"03")
+        UNION ALL
+        SELECT SUM(number*saleprice) FROM `bus_sales` WHERE DATE_FORMAT(salestime,"%Y%m") = CONCAT(#{year},"04")
+        UNION ALL
+        SELECT SUM(number*saleprice) FROM `bus_sales` WHERE DATE_FORMAT(salestime,"%Y%m") = CONCAT(#{year},"05")
+        UNION ALL
+        SELECT SUM(number*saleprice) FROM `bus_sales` WHERE DATE_FORMAT(salestime,"%Y%m") = CONCAT(#{year},"06")
+        UNION ALL
+        SELECT SUM(number*saleprice) FROM `bus_sales` WHERE DATE_FORMAT(salestime,"%Y%m") = CONCAT(#{year},"07")
+        UNION ALL
+        SELECT SUM(number*saleprice) FROM `bus_sales` WHERE DATE_FORMAT(salestime,"%Y%m") = CONCAT(#{year},"08")
+        UNION ALL
+        SELECT SUM(number*saleprice) FROM `bus_sales` WHERE DATE_FORMAT(salestime,"%Y%m") = CONCAT(#{year},"09")
+        UNION ALL
+        SELECT SUM(number*saleprice) FROM `bus_sales` WHERE DATE_FORMAT(salestime,"%Y%m") = CONCAT(#{year},"10")
+        UNION ALL
+        SELECT SUM(number*saleprice) FROM `bus_sales` WHERE DATE_FORMAT(salestime,"%Y%m") = CONCAT(#{year},"11")
+        UNION ALL
+        SELECT SUM(number*saleprice) FROM `bus_sales` WHERE DATE_FORMAT(salestime,"%Y%m") = CONCAT(#{year},"12")
+    </select>
+</mapper>

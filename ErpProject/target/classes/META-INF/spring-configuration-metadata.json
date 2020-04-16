@@ -1,0 +1,58 @@
+{
+  "groups": [
+    {
+      "name": "shiro",
+      "type": "com.qc.system.config.ShiroAutoConfiguration",
+      "sourceType": "com.qc.system.config.ShiroAutoConfiguration"
+    }
+  ],
+  "properties": [
+    {
+      "name": "shiro.anon-urls",
+      "type": "java.lang.String[]",
+      "sourceType": "com.qc.system.config.ShiroAutoConfiguration"
+    },
+    {
+      "name": "shiro.authc-urls",
+      "type": "java.lang.String[]",
+      "sourceType": "com.qc.system.config.ShiroAutoConfiguration"
+    },
+    {
+      "name": "shiro.hash-algorithm-name",
+      "type": "java.lang.String",
+      "sourceType": "com.qc.system.config.ShiroAutoConfiguration",
+      "defaultValue": "md5"
+    },
+    {
+      "name": "shiro.hash-iterations",
+      "type": "java.lang.Integer",
+      "sourceType": "com.qc.system.config.ShiroAutoConfiguration",
+      "defaultValue": 2
+    },
+    {
+      "name": "shiro.login-url",
+      "type": "java.lang.String",
+      "sourceType": "com.qc.system.config.ShiroAutoConfiguration",
+      "defaultValue": "\/index.html"
+    },
+    {
+      "name": "shiro.target-bean-name",
+      "type": "java.lang.String",
+      "sourceType": "com.qc.system.config.ShiroAutoConfiguration",
+      "defaultValue": "shiroFilter"
+    },
+    {
+      "name": "shiro.target-filter-lifecycle",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.qc.system.config.ShiroAutoConfiguration",
+      "defaultValue": true
+    },
+    {
+      "name": "shiro.unauthorized-url",
+      "type": "java.lang.String",
+      "sourceType": "com.qc.system.config.ShiroAutoConfiguration",
+      "defaultValue": "\/unauthorized.html"
+    }
+  ],
+  "hints": []
+}

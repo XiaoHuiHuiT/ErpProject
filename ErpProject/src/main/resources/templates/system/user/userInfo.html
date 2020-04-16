@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+	<meta charset="utf-8">
+	<title>个人资料--layui后台管理模板 2.0</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="/resources/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="/resources/css/public.css" media="all" />
+</head>
+<body class="childrenBody">
+<form class="layui-form layui-row" id="userFrm">
+	<div class="layui-col-md3 layui-col-xs12 user_right">
+		<div class="layui-upload-list">
+			<img class="layui-upload-img layui-circle userFaceBtn userAvatar" th:src="@{/file/showImage(filePath=${session.user.imgpath})}" id="userFace">
+		</div>
+		<button type="button" class="layui-btn layui-btn-primary userFaceBtn"><i class="layui-icon">&#xe67c;</i> 掐指一算，我要换一个头像了</button>
+		<p>由于是纯静态页面，所以只能显示一张随机的图片</p>
+	</div>
+	<div class="layui-col-md6 layui-col-xs12">
+		<div class="layui-form-item">
+			<label class="layui-form-label">用户名</label>
+			<div class="layui-input-block">
+				<input type="hidden" name="id" th:value="${session.user.id}">
+				<input type="hidden" name="imgpath" id="imgpath" th:value="${session.user.imgpath}" >
+				<input type="text" th:value="${session.user.name}" disabled class="layui-input layui-disabled">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">登陆名</label>
+			<div class="layui-input-block">
+				<input type="text" th:value="${session.user.loginname}" disabled class="layui-input layui-disabled">
+			</div>
+		</div>
+		<div class="layui-form-item" pane="">
+			<label class="layui-form-label">性别</label>
+			<div class="layui-input-block userSex">
+				<input type="radio" name="sex" value="1" title="男">
+				<input type="radio" name="sex" value="0" title="女">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">用户地址</label>
+			<div class="layui-input-block">
+				<input type="tel" th:value="${session.user.address}" name="address" placeholder="请输入用户地址" class="layui-input userPhone">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">用户备注</label>
+			<div class="layui-input-block">
+				<textarea placeholder="请输入用户备注" th:text="${session.user.remark}" name="remark" class="layui-textarea myself"></textarea>
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<div class="layui-input-block">
+				<button type="button" class="layui-btn" lay-submit="" lay-filter="changeUser">立即提交</button>
+				<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+			</div>
+		</div>
+	</div>
+</form>
+<script type="text/javascript" src="/resources/layui/layui.js"></script>
+<script>
+	let sex = [[${session.user.sex}]];
+
+	layui.use(["jquery","form","layer",'upload'],function () {
+		let $ = layui.jquery;
+		let form = layui.form;
+		let layer = layui.layer;
+		let upload = layui.upload;
+
+		// 1.得到所有的性别单选按钮
+		let oSexObj = $("[name='sex']");
+
+		$.each(oSexObj,function (i,item) {
+			if(sex == item.value){
+				$(item).attr("checked", "checked");
+				form.render();
+			}
+		});
+
+		//上传头像
+		upload.render({
+			elem: '.userFaceBtn',
+			url: '/file/uploadFile',
+			accept: "images",
+			acceptMime: 'image/*',
+			field: 'mf',// 相当于表单的name属性值<file name = "mf></font>
+			method : "post",  //此处是为了演示之用，实际使用中请将此删除，默认用post方式提交
+			done: function(res, index, upload){
+				$("#imgpath").val(res.data.src);
+				$('#userFace').attr('src',"/file/showImage?filePath="+res.data.src);
+			}
+		});
+
+		//修改用户信息
+		form.on("submit(changeUser)",function(data){
+			let index = layer.msg('提交中，请稍候',{icon: 16,time:false,shade:0.8});
+			// 序列化表单
+			let params = $("#userFrm").serialize();
+			console.log(params);
+
+			$.post("/user/changeUser",params,function (res) {
+				layer.msg(res.msg);
+				layer.close(index);
+			});
+			return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+		})
+	});
+</script>
+</body>
+</html>

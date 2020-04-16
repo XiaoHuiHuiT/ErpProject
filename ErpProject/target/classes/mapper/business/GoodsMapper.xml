@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qc.business.mapper.GoodsMapper">
+
+    <!-- 加载库存不够的商品-->
+    <select id="loadGoodsWarningCount" resultType="com.qc.business.domain.Goods">
+        SELECT * FROM `bus_goods` WHERE `number` &lt;= `dangernum`
+    </select>
+</mapper>
